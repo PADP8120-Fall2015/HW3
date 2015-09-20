@@ -238,44 +238,119 @@ p1 =<span class="st"> </span>.<span class="dv">55</span>; p2 =<span class="st"> 
 <ol start="2" style="list-style-type: lower-alpha">
 <li>Construct a 95% confidence interval to test whether the proportion changed. Interpret the confidence interval.</li>
 </ol>
-<p>As always, we can replicate most fancy R functions “by hand”. We’ll use the formula <span class="math">\(s_{p_1-p_2} = \sqrt(\frac{\hat{p}_1 (1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2(1-\hat{p}_2)}{n_2})\)</span></p>
-<p>p(1-p)/N)$:</p>
-<pre class="sourceCode r"><code class="sourceCode r">sigp1 =<span class="st"> </span><span class="kw">sqrt</span>(p1 *<span class="st"> </span>(<span class="dv">1</span>-p1) /<span class="st"> </span>n1)
-sigp2 =<span class="st"> </span><span class="kw">sqrt</span>(p2 *<span class="st"> </span>(<span class="dv">1</span>-p2) /<span class="st"> </span>n2)</code></pre>
+<p>As always, while the fancy <code>prop.test</code> output gives us a confidence interval, we can replicate most fancy R functions “by hand”. We’ll use the formula <span class="math">\(s_{p_1-p_2} = \sqrt(\frac{\hat{p}_1 (1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2(1-\hat{p}_2)}{n_2})\)</span>. The difference between the two estimates is straightforward, <span class="math">\(\hat{p}_1 - \hat{p}_2\)</span> = 0.55 - 0.48. The basic construct of (obs - exp) / SE still holds:</p>
+<pre class="sourceCode r"><code class="sourceCode r">SEp1p2 =<span class="st"> </span><span class="kw">sqrt</span>((p1 *<span class="st"> </span>(<span class="dv">1</span>-p1) /<span class="st"> </span>n1) +<span class="st"> </span>(p2 *<span class="st"> </span>(<span class="dv">1</span>-p2) /<span class="st"> </span>n2))
+pdiff =<span class="st"> </span>p1 -<span class="st"> </span>p2
+zobs =<span class="st"> </span>pdiff/SEp1p2
+<span class="co">#p-value associated with 2-tailed test for significant difference between the two proportions:</span>
+<span class="dv">2</span>*(<span class="dv">1</span>-<span class="kw">pnorm</span>(zobs))</code></pre>
+<pre><code>## [1] 0.002735841</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">pdiff +<span class="st"> </span><span class="kw">qnorm</span>(<span class="kw">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>)) *<span class="st"> </span>SEp1p2</code></pre>
+<pre><code>## [1] 0.02420581 0.11579419</code></pre>
+<p>This value should be pretty darn close to the outut of <code>prop.test</code>. In any case, we conclude that <span class="math">\(p(0.024 &lt;= p_1 - p_2 &lt;= 0.116) = 0.95\)</span>, i.e., there is a 95% chance that the the interval (0.024 to 0.116) contains the true difference in approval ratings.</p>
 <hr />
 <ol start="6" style="list-style-type: decimal">
-<li>(also Open Intro 5.11) The School for Kids Who Are Good At Music and Want To Learn To Do Other Stuff Good To claims that its students take at least 5 years of piano lessons on average. We have a random sample of 20 children from the city, with a mean of 4.6 years of piano lessons and a standard deviation of 2.2 years.</li>
+<li>(also Open Intro 5.11) The School for Kids Who Are Good At Music and Want To Learn To Do Other Stuff Good Too (SFKWAGAMAWTLTDOSGT) claims that its students take at least 5 years of piano lessons on average. We have a random sample of 20 former SFKWAGAMAWTLTDOSGT students, with a mean of 4.6 years of piano lessons and a standard deviation of 2.2 years.</li>
 </ol>
 <ol style="list-style-type: lower-alpha">
 <li>Evaluate SFKWAGAMAWTLTDOSGT’s claim using a hypothesis test.</li>
-<li>Construct a 95% confidence interval for the number of years students in this city take piano lessons, and interpet it in context of the data.</li>
+</ol>
+<p>Recall that we prefer to set up the null hypothesis to represent the “status quo.” We don’t necessarily care if students take MORE than 5 years, since we want to evaluate school’s claim that it’s students take AT LEAST 5 years on average. Thus, we’ll use a 1-sided test:</p>
+<p><span class="math">\(H_0\)</span>: &gt;= 5 <span class="math">\(H_A\)</span>: &lt; 5</p>
+<p>Since we only have 20 students, we’ll use a t-distribution. We can do this by hand:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#t.obs = (obs-exp) / SE</span>
+SE =<span class="st"> </span>((<span class="fl">2.2</span>)/<span class="kw">sqrt</span>(<span class="dv">20</span>))
+t.obs =<span class="st">  </span>(<span class="fl">4.6</span> -<span class="st"> </span><span class="dv">5</span>) /<span class="st"> </span>SE
+n=<span class="dv">20</span>
+df.sample =<span class="st"> </span><span class="dv">20-1</span> 
+<span class="co">#one-sided test, so just want lower tail. </span>
+<span class="kw">pt</span>(t.obs,<span class="dt">df =</span> df.sample,<span class="dt">lower.tail=</span><span class="ot">TRUE</span>)</code></pre>
+<pre><code>## [1] 0.213112</code></pre>
+<p>Since p &gt; 0.05, we fail to reject the null hypothesis and find that there is insufficient evidence to reject SFKWAGAMAWTLTDOSGT’s claim that it’s students take at least 5 years of music lessons on average.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Construct a 95% confidence interval for the number of years SFKWAGAMAWTLTDOSGT students take piano lessons, and interpet it in context of the data.</li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="fl">4.6</span> +<span class="st"> </span><span class="kw">qt</span>(<span class="kw">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>),<span class="dt">df=</span>df.sample) *<span class="st"> </span>SE</code></pre>
+<pre><code>## [1] 3.570368 5.629632</code></pre>
+<p>There is a 95% chance that the the interval (3.57 to 5.63) contains the true average number of music lesson years.</p>
+<ol start="3" style="list-style-type: lower-alpha">
 <li>Do your results from the hypothesis test and the confidence interval agree? Explain your reasoning.</li>
 </ol>
+<p>Yes, they do agree; the confidence interval contains the null hypothesis, which is why we were unable to reject the null in the first place (since the null, <span class="math">\(\mu\)</span> &gt;= 5, falls within the range of plausible value based upon our observed data).</p>
 <hr />
 <ol start="7" style="list-style-type: decimal">
 <li>(also Open Intro 5.19) Let’s consider how temperatures have changed in the US from 1968 to 2008. The daily high temperature reading on January 1 was collected in 1968 and 2008 for 51 randomly selected locations in the continental US. Then the difference between the two readings (temperature in 2008 - temperature in 1968) was calculated for each of the 51 different locations. The average of these 51 values was 1.1 degrees with a standard deviation of 4.9 degrees. We are interested in determining whether these data provide strong evidence of temperature warming in the continental US.</li>
 </ol>
 <ol style="list-style-type: lower-alpha">
 <li>Write hypotheses for this research in symbols and in words.</li>
+</ol>
+<p><span class="math">\(H_0\)</span>: <span class="math">\(\mu_{2008} - \mu_{1968} &lt;= 0\)</span> or <span class="math">\(\mu_{2008-1968} &lt;= 0\)</span> <span class="math">\(H_A\)</span>: <span class="math">\(\mu_{2008} - \mu_{1968} &gt; 0\)</span> or <span class="math">\(\mu_{2008-1968} &gt; 0\)</span></p>
+<p>Null: The average temperature in 2008 is less than or equal to the average temperature in 1968. Alternative: the average temperature in 2008 is greater than the average temperature in 1968.</p>
+<ol start="2" style="list-style-type: lower-alpha">
 <li>Check the conditions required to complete this test.</li>
+</ol>
+<ul>
+<li><p>Locations are random and represent less than 10% of all possible locations in the US.</p></li>
+<li><p>The sample size is at least 30.</p></li>
+<li><p>We are not given the distribution to check the skew. In practice, we would ask to see the data to check this condition, but here we will move forward under the assumption that it is not strongly skewed.</p></li>
+</ul>
+<ol start="3" style="list-style-type: lower-alpha">
 <li>Calculate the test statistic and find the p-value.</li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r">n =<span class="st"> </span><span class="dv">51</span>
+df.sample =<span class="st"> </span>n<span class="dv">-1</span>
+sd.sample =<span class="st"> </span><span class="fl">4.9</span>
+SE =<span class="st"> </span>sd.sample /<span class="st"> </span><span class="kw">sqrt</span>(n)
+t.obs =<span class="st"> </span>(<span class="fl">1.1</span>) /<span class="st"> </span>SE
+<span class="kw">pt</span>(t.obs,<span class="dt">df =</span> df.sample,<span class="dt">lower.tail=</span><span class="ot">FALSE</span>)</code></pre>
+<pre><code>## [1] 0.05759731</code></pre>
+<p>The p-value for this one-sided hypothesis test is <span class="math">\(0.058\)</span>. Thus, we <em>barely</em> reject the null at <span class="math">\(\alpha = 0.05\)</span>.</p>
+<ol start="4" style="list-style-type: lower-alpha">
 <li>What do you conclude? Interpret your conclusion in context.</li>
 </ol>
+<p>Essentially, what we have here is weak evidence indicating that there has been an increase in average temperature. The p-value we calculated is very close to 0.05 (the cutoff for 95% confidence). At a less stringent level (e.g, 90%), we do reject the null. Thus, probably the best way to put this is “While we are unable to reject the null at a significance level of <span class="math">\(\alpha = 0.05\)</span>, since p = 0.056 we do find limited evidence that the average temperature in 2008 is higher than that in 1968”.</p>
 <hr />
 <ol start="8" style="list-style-type: decimal">
 <li>Go to Sean Lahman’s baseball statistics database and download the 2014 version .csv file (<a href="http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip" class="uri">http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip</a>). Read in the file of batting statistics <code>Batting.csv</code> and select <strong>only</strong> players-seasons between 2005 and 2009 (try <code>yearID %in% c(2005:2009)</code> as your filtering mechanism) and <strong>only</strong> players who have at least 200 at-bats (<code>AB&gt;=200</code>).</li>
 </ol>
+<pre class="sourceCode r"><code class="sourceCode r">bat.df =<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">'input/Batting.csv'</span>)
+<span class="kw">library</span>(dplyr)
+bat.df &lt;-<span class="st"> </span>bat.df %&gt;%<span class="st"> </span><span class="kw">filter</span>(yearID %in%<span class="st"> </span><span class="kw">c</span>(<span class="dv">2005</span>:<span class="dv">2009</span>),AB&gt;=<span class="dv">200</span>)</code></pre>
 <ol style="list-style-type: lower-alpha">
-<li><p>Conduct an ANOVA to see whether there is a significant difference in average number of homeruns (<code>HR</code>) hit by players in each of these years.</p></li>
-<li><p>Using the techniques we employed in lab, conduct a series of pairwise comparisons to identify any significant differences between individual pairs of years.</p></li>
+<li>Conduct an ANOVA to see whether there is a significant difference in average number of homeruns (<code>HR</code>) hit by players in each of these years.</li>
 </ol>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># be sure to tell R to treat year as a category</span>
+aov.result =<span class="st"> </span><span class="kw">aov</span>(bat.df$HR ~<span class="st"> </span><span class="kw">as.character</span>(bat.df$yearID))
+<span class="kw">summary</span>(aov.result)</code></pre>
+<pre><code>##                               Df Sum Sq Mean Sq F value Pr(&gt;F)
+## as.character(bat.df$yearID)    4    323   80.81   0.803  0.523
+## Residuals                   1617 162665  100.60</code></pre>
+<p>Since p = 0.52, we find virtually no evidence that there is a significant difference in average homeruns hit when players are grouped by year (at least in 2005 through 2009). In other words, Year does not explain a significant amount of the variation observed in average homeruns hit. If we think about this intuitively, this makes sense - in any year, some players are good hitters and some are bad (in other words, some hit lots of HRs and some hit very few); thus, while homerun levels overall might change slightly (e.g., due to drug-testing), the within-group (in this case, within-year) variation between players is much, much larger, than the between-group (between year) variation.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Using the techniques we employed in lab, conduct a series of pairwise comparisons to identify any significant differences between individual pairs of years.</li>
+</ol>
+<p>I’ll use the Bonferroni correction, because it’s fun to say.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairwise.t.test</span>(<span class="dt">x=</span> bat.df$HR,<span class="dt">g =</span> bat.df$yearID,<span class="dt">alternative=</span><span class="st">'two.sided'</span>,<span class="dt">p.adj =</span> <span class="st">'bonf'</span>)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  bat.df$HR and bat.df$yearID 
+## 
+##      2005 2006 2007 2008
+## 2006 1.0  -    -    -   
+## 2007 1.0  1.0  -    -   
+## 2008 1.0  0.9  1.0  -   
+## 2009 1.0  1.0  1.0  1.0 
+## 
+## P value adjustment method: bonferroni</code></pre>
+<p>As we might have expected given our super-high p-value (p~0.50), we find virtually no difference between any pairs of years as well.</p>
 <div id="report-your-process" class="section level3">
 <h3>Report your process</h3>
 <p>You’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. Give credit to your sources, whether it’s a blog post, a fellow student, an online tutorial, etc.</p>
 </div>
 <div id="rubric" class="section level3">
 <h3>Rubric</h3>
-<p>Minus: Didn’t tackle at least 3 tasks. Or didn’t make companion graphs. Didn’t interpret anything but left it all to the “reader”. Or more than one technical problem that is relatively easy to fix. It’s hard to find the report in our repo.</p>
+<p>Minus: Didn’t tackle at least 3 tasks. Didn’t interpret anything but left it all to the “reader”. Or more than one technical problem that is relatively easy to fix. It’s hard to find the report in our repo.</p>
 <p>Check: Completed, but not fully accurate and/or readable. Requires a bit of detective work on my part to see what you did</p>
 <p>Check plus: Hits all the elements. No obvious mistakes. Pleasant to read. No heroic detective work required. Solid.</p>
 <div id="the-command-below-is-helpful-for-debugging-please-dont-change-it" class="section level4">
@@ -291,12 +366,14 @@ sigp2 =<span class="st"> </span><span class="kw">sqrt</span>(p2 *<span class="st
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] foreign_0.8-65
+## [1] dplyr_0.4.2    foreign_0.8-65
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] magrittr_1.5    formatR_1.2     tools_3.2.2     htmltools_0.2.6
-##  [5] yaml_2.1.13     stringi_0.5-5   rmarkdown_0.7   knitr_1.10.5   
-##  [9] stringr_1.0.0   digest_0.6.8    evaluate_0.7</code></pre>
+##  [1] Rcpp_0.12.0     digest_0.6.8    assertthat_0.1  R6_2.1.0       
+##  [5] DBI_0.3.1       formatR_1.2     magrittr_1.5    evaluate_0.7   
+##  [9] stringi_0.5-5   lazyeval_0.1.10 rmarkdown_0.7   tools_3.2.2    
+## [13] stringr_1.0.0   yaml_2.1.13     parallel_3.2.2  htmltools_0.2.6
+## [17] knitr_1.10.5</code></pre>
 </div>
 </div>
 </div>
