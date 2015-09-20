@@ -73,29 +73,22 @@ a. Using the `cor()` function, compute Pearson’s `r` between these two variabl
 b. Many argue that, with two ordinal variables, a more appropriate correlation
 measure is Spearman’s $\rho$, which is a rank correlation. Compute $\rho$ (again using the `cor()` function - consult `?cor` if you're stuck) and contrast the results from $r$.
 
-*** 
-
-5. You are working for Professor Hood as a research assistant this semester. He is worried he may have miscalculated the $\chi^2$ statistic that appears on Table 2 of his “Packin’ in the Hood?: Examining Assumptions of Concealed-Handgun Research” article (www.jstor.org/stable/42863973). For Table 2 do the following:
-a. Calculate the expected frequency ($f_e$) for each cell in the table.
-b. Calculate the $chi^2$ and see if you are able to duplicate the results. 
-
 ***
 
-6. You are interested in the impact that Hurricane Katrina (and the government's response to Hurricane Katrina) had on President Bush's approval rating. In a Aug. 24, 2005 Gallup poll, 55% of the 814 people surveyed answered that they approved of George W. Bush's handling of his job as president. In a Sept. 14, 2005 Gallup poll, 48% of the 1032 people surveyed answered that they approved of George W. Bush?s handling of his job as president.
+5. You are interested in the impact that Hurricane Katrina (and the government's response to Hurricane Katrina) had on President Bush's approval rating. In a Aug. 24, 2005 Gallup poll, 55% of the 814 people surveyed answered that they approved of George W. Bush's handling of his job as president. In a Sept. 14, 2005 Gallup poll, 48% of the 1032 people surveyed answered that they approved of George W. Bush?s handling of his job as president.
 a. At a 99% significance level, did the proportion of Americans that approve of Bush's job as president change after Katrina?
 b. Construct a 95% confidence interval to test whether the proportion changed. Interpret the confidence interval.
 
 ***
 
-7. (also Open Intro 5.11) The School for Kids Who Are Good At Music and Want To Learn To Do Other Stuff Good To claims that its students take at least 5 years of piano lessons on average. We have a random sample of 20 children from the city, with a mean of 4.6 years of piano lessons and a standard deviation of 2.2 years.
+6. (also Open Intro 5.11) The School for Kids Who Are Good At Music and Want To Learn To Do Other Stuff Good Too (SFKWAGAMAWTLTDOSGT) claims that its students take at least 5 years of piano lessons on average. We have a random sample of 20 former SFKWAGAMAWTLTDOSGT students, with a mean of 4.6 years of piano lessons and a standard deviation of 2.2 years.
 a. Evaluate SFKWAGAMAWTLTDOSGT's claim using a hypothesis test.
-b. Construct a 95% confidence interval for the number of years students in this city take piano
-lessons, and interpet it in context of the data.
+b. Construct a 95% confidence interval for the number of years SFKWAGAMAWTLTDOSGT students take piano lessons, and interpet it in context of the data.
 c. Do your results from the hypothesis test and the confidence interval agree? Explain your
 reasoning.
 
 ***
-8. (also Open Intro 5.19) Let’s consider how temperatures have changed in the US from 1968 to 2008.
+7. (also Open Intro 5.19) Let’s consider how temperatures have changed in the US from 1968 to 2008.
 The daily high temperature reading on January 1 was collected in 1968 and 2008 for 51 randomly
 selected locations in the continental US. Then the difference between the two readings (temperature
 in 2008 - temperature in 1968) was calculated for each of the 51 different locations. The average
@@ -108,7 +101,7 @@ determining whether these data provide strong evidence of temperature warming in
 (d) What do you conclude? Interpret your conclusion in context.
 
 ***
-9. Go to Sean Lahman's baseball statistics database and download the 2014 version .csv file (http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip). Read in the file of batting statistics `Batting.csv` and select **only** players-seasons between 2005 and 2009 (try `yearID %in% c(2005:2009)` as your filtering mechanism) and **only** players who have at least 200 at-bats (`AB>=200`).
+8. Go to Sean Lahman's baseball statistics database and download the 2014 version .csv file (http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip). Read in the file of batting statistics `Batting.csv` and select **only** players-seasons between 2005 and 2009 (try `yearID %in% c(2005:2009)` as your filtering mechanism) and **only** players who have at least 200 at-bats (`AB>=200`).
 
 (a) Conduct an ANOVA to see whether there is a significant difference in average number of homeruns (`HR`) hit by players in each of these years.
 
@@ -122,7 +115,7 @@ You're encouraged to reflect on what was hard/easy, problems you solved, helpful
 
 ### Rubric
 
-Minus: Didn't tackle at least 3 tasks. Or didn't make companion graphs. Didn't interpret anything but left it all to the "reader". Or more than one technical problem that is relatively easy to fix. It's hard to find the report in our repo.
+Minus: Didn't tackle at least 3 tasks. Didn't interpret anything but left it all to the "reader". Or more than one technical problem that is relatively easy to fix. It's hard to find the report in our repo.
 
 Check: Completed, but not fully accurate and/or readable. Requires a bit of detective work on my part to see what you did
 
