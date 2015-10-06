@@ -77,7 +77,7 @@ str(AR.voting.data$EV)
 # GUIDE: t.test(x = data$DV_variable[data$IV_variable==...],y = data$DV_variable[data$IV_variable==...]],mu=0,alternative='two.sided')
 t.test(x = AR.voting.data$eval_voting[AR.voting.data$EV==1],y = AR.voting.data$eval_voting[AR.voting.data$EV==0],mu=0,alternative='two.sided')
 ```
-We can reject the null at both the 0.05 and the 0.001 levels because the p(t_{obs} > t_{\alpha=0.05,df=1421.1}). We have strong support to conclude that there is a significant difference in average voter satisifaction based on voter usage of e-voting or traditional voting methods.
+We can reject the null at both the 0.05 and the 0.001 levels because the p(t_{obs} > t_{\alpha=0.05,df=1421.1}). We have strong support to conclude that there is a significant difference in average voter satisfaction based on voter usage of e-voting or traditional voting methods.
 *** 
 3. Construct two cross-tabulations:
 
@@ -102,7 +102,7 @@ aov(AR.voting.data$eval_voting~AR.voting.data$EV) #This is the regular ANOVA tes
 # GUIDE: summary(aov(DV~IV))
 summary(aov(AR.voting.data$eval_voting~AR.voting.data$EV)) #This gives us the summary statistics and p-value we need,
 ```
-The difference between the  method of voting (E-voting or Traditional Ballot) and the average voter satisfaction (positive or  not) was statistically significant  ($F_{obs} > F_{\alpha=0.05,df_1=1,df2=1458}$). We can conclude that voters who used E-voting had a diffferent experinece than those who used traditional ballot voting. 
+The difference between the  method of voting (E-voting or Traditional Ballot) and the average voter satisfaction (positive or  not) was statistically significant  ($F_{obs} > F_{\alpha=0.05,df_1=1,df2=1458}$). We can conclude that voters who used E-voting had a different experience than those who used traditional ballot voting. 
 
 b. Construct a cross-tabulation where the dependent variable is how positively
 voters view the voting experience (eval voting) and the independent variable
@@ -118,14 +118,14 @@ table(AR.voting.data$pol_info,AR.voting.data$eval_voting)
 # GUIDE: summary(aov(DV~IV)); as.character helps R deal with the ordinal pol_info variable.
 summary(aov(AR.voting.data$eval_voting~as.character(AR.voting.data$pol_info)))
 ```
-The difference between the  political knowlege (at levels 1-5) and the average voter satisfaction (positive or  not) was statistically significant  ($F_{obs} > F_{\alpha=0.05,df_1=1,df2=1458}$). We can conclude that on average, voters who have varying levels of political knowledge assess voting satisfaction differently. 
+The difference between the  political knowledge (at levels 1-5) and the average voter satisfaction (positive or  not) was statistically significant  ($F_{obs} > F_{\alpha=0.05,df_1=1,df2=1458}$). We can conclude that on average, voters who have varying levels of political knowledge assess voting satisfaction differently. 
 ***
 
 4. Consider the correlation between level of education (`educ`) and political knowledge
 (`pol info`):
 a. Using the `cor()` function, compute Pearson’s `r` between these two variables.
 
-Level of education is a discrete, numerical variable;the y variable needs to be compatiable. In order to find the correlation between educational level and political information in R, we now have to treat pol_info as a numerical variable instead of as a categorical variable as demonstrated in the previous exercise.
+Level of education is a discrete, numerical variable;the y variable needs to be compatible. In order to find the correlation between educational level and political information in R, we now have to treat pol_info as a numerical variable instead of as a categorical variable as demonstrated in the previous exercise.
 ```{r}
 ?cor()
 # GUIDE: cor(x, y = NULL, use = "everything",
@@ -142,7 +142,7 @@ measure is Spearman’s $\rho$, which is a rank correlation. Compute $\rho$ (aga
 # This exercise is asking us to treat educational level and political knowledge as ordinal, categorical variables instead of as discrete, numerical variables. 
 cor(AR.voting.data$educ,AR.voting.data$pol_info,method = "spearman")
 ```
-The correlation between educational level and political knowledge using Spearman's $/rho$ is 0.3267048 or 0.327.  For every one unit increase in eduucational level, political knowledge may increase 0.327 units.
+The correlation between educational level and political knowledge using Spearman's $/rho$ is 0.3267048 or 0.327.  For every one unit increase in educational level, political knowledge may increase 0.327 units.
 ***
 
 5. You are interested in the impact that Hurricane Katrina (and the government's response to Hurricane Katrina) had on President Bush's approval rating. In a Aug. 24, 2005 Gallup poll, 55% of the 814 people surveyed answered that they approved of George W. Bush's handling of his job as president. In a Sept. 14, 2005 Gallup poll, 48% of the 1032 people surveyed answered that they approved of George W. Bush's handling of his job as president.
@@ -164,7 +164,7 @@ pihat1 = 0.55; pihat2 = 0.48
 # "greater"),conf.level = 0.95, correct = TRUE)
 prop.test(x=c(n1*pihat1,n2*pihat2), n = c(n1,n2),alternative = c("two.sided"),conf.level = 0.99,correct = TRUE)
 ```
-W can reject the null because the $p_{obs} < p_{0.01}$. Based on these statistics, there is good evidence that there is a significant diffrence in the proportion of vooters whp appproved of President Bush (43) before and after Hurricane Katrina.
+W can reject the null because the $p_{obs} < p_{0.01}$. Based on these statistics, there is good evidence that there is a significant difference in the proportion of voters who approved of President Bush (43) before and after Hurricane Katrina.
 
 b. Construct a 95% confidence interval to test whether the proportion changed. Interpret the confidence interval.
 ```{r}
@@ -209,13 +209,13 @@ pt(t.obs,df = df.sample, lower.tail = TRUE)
 ```
 The $\alpha$ = 0.05 for this t-test. Because the observed p-value is 0.213112, we fail to reject the null and conclude that there is not enough evidence to challenge SFKWAGAMAWTLTDOSGT's claim that its students, on average, take at least 5 years of piano lessons.
 
-b. Construct a 95% confidence interval for the number of years SFKWAGAMAWTLTDOSGT students take piano lessons, and interpet it in context of the data.
+b. Construct a 95% confidence interval for the number of years SFKWAGAMAWTLTDOSGT students take piano lessons, and interpret it in context of the data.
 ```{r}
 # GUIDE: mean point estimate + qt(p, df, lower.tail = TRUE)
 #If we are intrested in the 95% CI, then we need to look at the 2.5 %ile and the 97.5 %ile.
 4.6 + qt(c(0.025,0.975),df=df.sample ) * SE
 ```
-We can be 95% confident that the true value of the average number of yars of piano lessons at SFKWAGAMAWTLTDOSGT is between 3.570 5.630 ($3.570368 < \mu_{piano} < 5.629632$).
+We can be 95% confident that the true value of the average number of years of piano lessons at SFKWAGAMAWTLTDOSGT is between 3.570 5.630 ($3.570368 < \mu_{piano} < 5.629632$).
 
 c. Do your results from the hypothesis test and the confidence interval agree? Explain your
 reasoning.
@@ -240,7 +240,7 @@ CONDITIONS:
 1. INDEPENDENCE?
 Yes; the locations had the same probability of being initially picked and with only 51 locations, they comprise less than 10% of the available temperature-taking locations in the United States.
 2. NEARLY NORMAL DISTRIBUTION?
-Possibly; we cannot confirm the normality assumption because we cannot see the data to determine if there a signifcant skew. It is possible that there are extreme values (Death Valley or Juneau, Alaska), but I am making the assumption that the experiment planners tried to get observaations that reflected the range of normal temperatures seen throughout the continental U.S. Quite possibly, there is a value for each state. Nevertheless, n > 30, making it possible and appropriate to use the t-distribution. 
+Possibly; we cannot confirm the normality assumption because we cannot see the data to determine if there a significant skew. It is possible that there are extreme values (Death Valley or Juneau, Alaska), but I am making the assumption that the experiment planners tried to get observations that reflected the range of normal temperatures seen throughout the continental U.S. Quite possibly, there is a value for each state. Nevertheless, n > 30, making it possible and appropriate to use the t-distribution. 
 
 (c) Calculate the test statistic and find the p-value.
 ```{r}
@@ -259,7 +259,7 @@ pt(t.obs,df = df.sample, lower.tail = FALSE)
 #0.05759731
 ```
 (d) What do you conclude? Interpret your conclusion in context.
-The $\alpha$ = 0.05 for this t-test. Because the observed p-value is 0.05759731 (or rather 0.058), we barely fail to reject the null and conclude that there is not enough evidence to indicate that there has been an increase in the averaage temperature from 1968 to 2008. Interestingly, if we ran a t-test with an $\alpha$ = 0.10, we could reject the null at this level of signficance, but it is possble thaat we would increase our Type II Error in doing so. That being said, the evidence does seem to point to towards an increase in temperatures that may not yet be statistically significant but could be going forward.
+The $\alpha$ = 0.05 for this t-test. Because the observed p-value is 0.05759731 (or rather 0.058), we barely fail to reject the null and conclude that there is not enough evidence to indicate that there has been an increase in the average temperature from 1968 to 2008. Interestingly, if we ran a t-test with an $\alpha$ = 0.10, we could reject the null at this level of significance, but it is possible that we would increase our Type II Error in doing so. That being said, the evidence does seem to point to towards an increase in temperatures that may not yet be statistically significant but could be going forward.
 
 ***
 8. Go to Sean Lahman's baseball statistics database and download the 2014 version .csv file (http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip). Read in the file of batting statistics `Batting.csv` and select **only** players-seasons between 2005 and 2009 (try `yearID %in% c(2005:2009)` as your filtering mechanism) and **only** players who have at least 200 at-bats (`AB>=200`).
@@ -281,8 +281,12 @@ table(bat.df$HR,bat.df$yearID)
 aov(bat.df$HR ~ as.character(bat.df$yearID))
 summary(aov(bat.df$HR ~ as.character(bat.df$yearID)))
 ```
+The difference between the yearID and the average home runs was not statistically significant with a p-value = 0.523.  ($P(F_{obs}) < P(F_{\alpha=0.05,df_1=4,df2=1617})$). We can conclude that on average, that the year has almost nothing to do with the average number of home runs hit. 
+
 (b) Using the techniques we employed in lab, conduct a series of pairwise comparisons to identify any significant differences between individual pairs of years. 
 ```{r}
+#I am relying on your  code in the HW3 Key. I looked at Lab 8 and saw that we will be learning this soon. I will use R's handy dandy guides to help me better understand what's going on.
+
 ?pairwise.t.test
 #GUIDE: pairwise.t.test(x, g, p.adjust.method = p.adjust.methods,
 #                pool.sd = !paired, paired = FALSE,
@@ -302,6 +306,7 @@ pairwise.t.test(x= bat.df$HR,g = bat.df$yearID,alternative='two.sided',p.adj = '
 
 You're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. Give credit to your sources, whether it's a blog post, a fellow student, an online tutorial, etc.
 
+I think I mistakenly labeled the SE in Problem 5 SEpool when I should have just left it SE. My thoughts in labeling it SE pool was that I assumed the variance would be the same in each sample since they were pretty large  and approximately normal.  Please advise.
 
 ### Rubric
 
