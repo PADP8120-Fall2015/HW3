@@ -34,7 +34,7 @@ AR.voting.data = read.dta('http://j.mp/alpl2013')
 Salta voter has used more than three of these six devices. (Formally: $H_0: \mu = 3; H_A: \mu > 3$)
 ```{r} 
 # Because this is one sample, the data are  independent, and the n > 30, I can assume normality and proceed with testing the hypotheses using a One Sample t-test.
-?t.test
+#?t.test
 # GUIDE: t.test(x,mu=3) # Ho: mu=3
 t.test(x = AR.voting.data$tech,alternative = 'greater',mu = 3)
 ```
@@ -71,7 +71,7 @@ a. Construct a cross-tabulation where the dependent variable is how positively
 voters view the voting experience (eval voting) and the independent variable
 is whether they used e-voting or traditional voting (EV). 
 ```{r}
-?table
+#?table
 # GUIDE: table(data$IV_variable,data$DV_variable)
 # GUIDE 2: mytable <- table(A,B) 
 # A will be rows, B will be columns 
@@ -81,11 +81,11 @@ Does the distribution of voting evaluation depend on whether the voter used e-vo
 ```{r}
 #This question is asking about the variance between the method of voting (EV==1,
 #EV==0)-my IV/explanatory variable/x; and the voting_eval==1 or ==0 -my  DV/response variable/y.
-?aov #This means "analysis of variance".
+#?aov -> This means "analysis of variance".
 #ANOVA's parameter is the F-statistic with an associated p-value. It tells us if any of the groups we are comparing are different from the other groups. Unfortunately,  it doesn't tell us which group is different.
 aov(AR.voting.data$eval_voting~AR.voting.data$EV) #This is the regular ANOVA test without the summary statistics. 
 # GUIDE: summary(aov(DV~IV))
-summary(aov(AR.voting.data$eval_voting~AR.voting.data$EV)) #This gives us the summary statistics and p-value we need,
+summary(aov(AR.voting.data$eval_voting~AR.voting.data$EV)) #This gives us the summary statistics and p-value we need.
 ```
 The difference between the  method of voting (E-voting or Traditional Ballot) and the average voter satisfaction (positive or  not) was statistically significant  ($F_{obs} > F_{\alpha=0.05,df_1=1,df2=1458}$). We can conclude that voters who used E-voting had a different experience than those who used traditional ballot voting. 
 
@@ -112,7 +112,7 @@ The difference between the  political knowledge (at levels 1-5) and the average 
 a. Using the `cor()` function, compute Pearson’s `r` between these two variables.
 Level of education is a discrete, numerical variable;the y variable needs to be compatible. In order to find the correlation between educational level and political information in R, we now have to treat pol_info as a numerical variable instead of as a categorical variable as demonstrated in the previous exercise.
 ```{r}
-?cor()
+#?cor()
 # GUIDE: cor(x, y = NULL, use = "everything",method = c("pearson", "kendall", "spearman"))
 cor(AR.voting.data$educ,AR.voting.data$pol_info,method = "pearson")
 str(AR.voting.data$educ)
@@ -141,7 +141,7 @@ pihat1 = 0.55; pihat2 = 0.48
 # SE pool FORMULA: sqrt [pi hat1(1-pi hat1)/n1 + pi hat2(1-pi hat2)/n2]
 # CI FORMULA: (pi hat2 - pi hat1) + - z(SE pool)
 # z = (pi hat2 - pi hat1) - 0/ SE pool
-?prop.test
+#?prop.test
 #prop.test can be used for testing the null that the proportions (probabilities of success) in several groups are the same, or that they equal certain given values.
 # GUIDE: prop.test(x = # of successes, n = # of trials)
 # GUIDE 2: prop.test(x, n, p = NULL,alternative = c("two.sided", "less",
@@ -158,7 +158,7 @@ b. Construct a 95% confidence interval to test whether the proportion changed. I
 SEpool = sqrt((pihat1 * (1-pihat1) / n1 + pihat2 * (1-pihat2) / n2))
 Bush.pdiff = pihat2 - pihat1
 Bush.zobs = Bush.pdiff / SEpool
-?pnorm
+#?pnorm
 pnorm(Bush.zobs)  #This gives the one tailed p-value for Bush.zobs.
 2*(pnorm(Bush.zobs))  #This gives the two-tailed p-value for Bush.zobs.
 #If we are intrested in the 95% CI, then we need to look at the 2.5 %ile and the 97.5 %ile. I need to use the "qnorm" function.
@@ -186,7 +186,7 @@ sd = 2.2
 # t.obs = (obs value - expected value) / (sd/[sqrt(n)])
 t.obs = (xbar - EV) / (sd/sqrt(n))
 SE = (sd/sqrt(n))
-?pt
+#?pt
 # GUIDE: pt(q, df, ncp, lower.tail = TRUE, log.p = FALSE)
 pt(t.obs,df = df.sample, lower.tail = TRUE)
 # 0.213112
@@ -238,7 +238,7 @@ EV = 0
 t.obs = (xbar - EV) / (sd/sqrt(n))
 t.obs
 SE = (sd/sqrt(n))
-?pt
+#?pt
 # GUIDE: pt(q, df, ncp, lower.tail = TRUE, log.p = FALSE)
 pt(t.obs,df = df.sample, lower.tail = FALSE)
 #0.05759731
@@ -274,8 +274,7 @@ The difference between the yearID and the average home runs was not statisticall
 (b) Using the techniques we employed in lab, conduct a series of pairwise comparisons to identify any significant differences between individual pairs of years. 
 ```{r}
 #I am relying on your  code in the HW3 Key. I looked at Lab 8 and saw that we will be learning this soon. I will use R's handy dandy guides to help me better understand what's going on.
-
-?pairwise.t.test
+#?pairwise.t.test
 #GUIDE: pairwise.t.test(x, g, p.adjust.method = p.adjust.methods,
 #                pool.sd = !paired, paired = FALSE,
 #                alternative = c("two.sided", "less", "greater"),
@@ -284,7 +283,7 @@ The difference between the yearID and the average home runs was not statisticall
 #       g	-> grouping vector or factor
 #yearID will be our grouping factor...
 
-?p.adjust
+#?p.adjust
 #GUIDE: p.adjust.methods
 # c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
 #   "fdr", "none")
@@ -294,6 +293,7 @@ pairwise.t.test(x= bat.df$HR,g = bat.df$yearID,alternative='two.sided',p.adj = '
 ### Report your process
 
 You're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. Give credit to your sources, whether it's a blog post, a fellow student, an online tutorial, etc.
+
 I think I mistakenly labeled the SE in Problem 5 SEpool when I should have just left it SE. My thoughts in labeling it SE pool was that I assumed the variance would be the same in each sample since they were pretty large  and approximately normal.  Please advise.
 
 ### Rubric

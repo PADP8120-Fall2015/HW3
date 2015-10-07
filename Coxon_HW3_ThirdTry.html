@@ -78,9 +78,8 @@ AR.voting.data = read.dta('http://j.mp/alpl2013')</code></pre>
 <li>Consider the number of technological devices. Test the hypothesis that the average Salta voter has used more than three of these six devices. (Formally: <span class="math">\(H_0: \mu = 3; H_A: \mu &gt; 3\)</span>)</li>
 </ol>
 <pre class="r"><code># Because this is one sample, the data are  independent, and the n &gt; 30, I can assume normality and proceed with testing the hypotheses using a One Sample t-test.
-?t.test</code></pre>
-<pre><code>## starting httpd help server ... done</code></pre>
-<pre class="r"><code># GUIDE: t.test(x,mu=3) # Ho: mu=3
+#?t.test
+# GUIDE: t.test(x,mu=3) # Ho: mu=3
 t.test(x = AR.voting.data$tech,alternative = 'greater',mu = 3)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
@@ -146,7 +145,7 @@ t.test(x = AR.voting.data$eval_voting[AR.voting.data$EV==1],y = AR.voting.data$e
 <ol style="list-style-type: lower-alpha">
 <li>Construct a cross-tabulation where the dependent variable is how positively voters view the voting experience (eval voting) and the independent variable is whether they used e-voting or traditional voting (EV).</li>
 </ol>
-<pre class="r"><code>?table
+<pre class="r"><code>#?table
 # GUIDE: table(data$IV_variable,data$DV_variable)
 # GUIDE 2: mytable &lt;- table(A,B) 
 # A will be rows, B will be columns 
@@ -158,7 +157,7 @@ table(AR.voting.data$EV,AR.voting.data$eval_voting)</code></pre>
 <p>Does the distribution of voting evaluation depend on whether the voter used e-voting?</p>
 <pre class="r"><code>#This question is asking about the variance between the method of voting (EV==1,
 #EV==0)-my IV/explanatory variable/x; and the voting_eval==1 or ==0 -my  DV/response variable/y.
-?aov #This means &quot;analysis of variance&quot;.
+#?aov -&gt; This means &quot;analysis of variance&quot;.
 #ANOVA's parameter is the F-statistic with an associated p-value. It tells us if any of the groups we are comparing are different from the other groups. Unfortunately,  it doesn't tell us which group is different.
 aov(AR.voting.data$eval_voting~AR.voting.data$EV) #This is the regular ANOVA test without the summary statistics. </code></pre>
 <pre><code>## Call:
@@ -173,7 +172,7 @@ aov(AR.voting.data$eval_voting~AR.voting.data$EV) #This is the regular ANOVA tes
 ## Estimated effects may be unbalanced
 ## 15 observations deleted due to missingness</code></pre>
 <pre class="r"><code># GUIDE: summary(aov(DV~IV))
-summary(aov(AR.voting.data$eval_voting~AR.voting.data$EV)) #This gives us the summary statistics and p-value we need,</code></pre>
+summary(aov(AR.voting.data$eval_voting~AR.voting.data$EV)) #This gives us the summary statistics and p-value we need.</code></pre>
 <pre><code>##                     Df Sum Sq Mean Sq F value Pr(&gt;F)    
 ## AR.voting.data$EV    1  22.16  22.162   102.8 &lt;2e-16 ***
 ## Residuals         1458 314.33   0.216                   
@@ -215,7 +214,7 @@ summary(aov(AR.voting.data$eval_voting~as.character(AR.voting.data$pol_info)))</
 <ol style="list-style-type: lower-alpha">
 <li>Using the <code>cor()</code> function, compute Pearson’s <code>r</code> between these two variables. Level of education is a discrete, numerical variable;the y variable needs to be compatible. In order to find the correlation between educational level and political information in R, we now have to treat pol_info as a numerical variable instead of as a categorical variable as demonstrated in the previous exercise.</li>
 </ol>
-<pre class="r"><code>?cor()
+<pre class="r"><code>#?cor()
 # GUIDE: cor(x, y = NULL, use = &quot;everything&quot;,method = c(&quot;pearson&quot;, &quot;kendall&quot;, &quot;spearman&quot;))
 cor(AR.voting.data$educ,AR.voting.data$pol_info,method = &quot;pearson&quot;)</code></pre>
 <pre><code>## [1] 0.3540482</code></pre>
@@ -245,7 +244,7 @@ pihat1 = 0.55; pihat2 = 0.48
 # SE pool FORMULA: sqrt [pi hat1(1-pi hat1)/n1 + pi hat2(1-pi hat2)/n2]
 # CI FORMULA: (pi hat2 - pi hat1) + - z(SE pool)
 # z = (pi hat2 - pi hat1) - 0/ SE pool
-?prop.test
+#?prop.test
 #prop.test can be used for testing the null that the proportions (probabilities of success) in several groups are the same, or that they equal certain given values.
 # GUIDE: prop.test(x = # of successes, n = # of trials)
 # GUIDE 2: prop.test(x, n, p = NULL,alternative = c(&quot;two.sided&quot;, &quot;less&quot;,
@@ -273,7 +272,7 @@ prop.test(x=c(n1*pihat1,n2*pihat2), n = c(n1,n2),alternative = c(&quot;two.sided
 SEpool = sqrt((pihat1 * (1-pihat1) / n1 + pihat2 * (1-pihat2) / n2))
 Bush.pdiff = pihat2 - pihat1
 Bush.zobs = Bush.pdiff / SEpool
-?pnorm
+#?pnorm
 pnorm(Bush.zobs)  #This gives the one tailed p-value for Bush.zobs.</code></pre>
 <pre><code>## [1] 0.001367921</code></pre>
 <pre class="r"><code>2*(pnorm(Bush.zobs))  #This gives the two-tailed p-value for Bush.zobs.</code></pre>
@@ -300,7 +299,7 @@ sd = 2.2
 # t.obs = (obs value - expected value) / (sd/[sqrt(n)])
 t.obs = (xbar - EV) / (sd/sqrt(n))
 SE = (sd/sqrt(n))
-?pt
+#?pt
 # GUIDE: pt(q, df, ncp, lower.tail = TRUE, log.p = FALSE)
 pt(t.obs,df = df.sample, lower.tail = TRUE)</code></pre>
 <pre><code>## [1] 0.213112</code></pre>
@@ -342,7 +341,7 @@ t.obs = (xbar - EV) / (sd/sqrt(n))
 t.obs</code></pre>
 <pre><code>## [1] 1.603178</code></pre>
 <pre class="r"><code>SE = (sd/sqrt(n))
-?pt
+#?pt
 # GUIDE: pt(q, df, ncp, lower.tail = TRUE, log.p = FALSE)
 pt(t.obs,df = df.sample, lower.tail = FALSE)</code></pre>
 <pre><code>## [1] 0.05759731</code></pre>
@@ -477,8 +476,7 @@ aov(bat.df$HR ~ as.character(bat.df$yearID))</code></pre>
 <li>Using the techniques we employed in lab, conduct a series of pairwise comparisons to identify any significant differences between individual pairs of years.</li>
 </ol>
 <pre class="r"><code>#I am relying on your  code in the HW3 Key. I looked at Lab 8 and saw that we will be learning this soon. I will use R's handy dandy guides to help me better understand what's going on.
-
-?pairwise.t.test
+#?pairwise.t.test
 #GUIDE: pairwise.t.test(x, g, p.adjust.method = p.adjust.methods,
 #                pool.sd = !paired, paired = FALSE,
 #                alternative = c(&quot;two.sided&quot;, &quot;less&quot;, &quot;greater&quot;),
@@ -487,7 +485,7 @@ aov(bat.df$HR ~ as.character(bat.df$yearID))</code></pre>
 #       g   -&gt; grouping vector or factor
 #yearID will be our grouping factor...
 
-?p.adjust
+#?p.adjust
 #GUIDE: p.adjust.methods
 # c(&quot;holm&quot;, &quot;hochberg&quot;, &quot;hommel&quot;, &quot;bonferroni&quot;, &quot;BH&quot;, &quot;BY&quot;,
 #   &quot;fdr&quot;, &quot;none&quot;)
@@ -506,7 +504,8 @@ pairwise.t.test(x= bat.df$HR,g = bat.df$yearID,alternative='two.sided',p.adj = '
 ## P value adjustment method: bonferroni</code></pre>
 <div id="report-your-process" class="section level3">
 <h3>Report your process</h3>
-<p>You’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. Give credit to your sources, whether it’s a blog post, a fellow student, an online tutorial, etc. I think I mistakenly labeled the SE in Problem 5 SEpool when I should have just left it SE. My thoughts in labeling it SE pool was that I assumed the variance would be the same in each sample since they were pretty large and approximately normal. Please advise.</p>
+<p>You’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. Give credit to your sources, whether it’s a blog post, a fellow student, an online tutorial, etc.</p>
+<p>I think I mistakenly labeled the SE in Problem 5 SEpool when I should have just left it SE. My thoughts in labeling it SE pool was that I assumed the variance would be the same in each sample since they were pretty large and approximately normal. Please advise.</p>
 </div>
 <div id="rubric" class="section level3">
 <h3>Rubric</h3>
