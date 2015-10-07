@@ -1,0 +1,160 @@
+---
+title: "HW3Zier"
+author: "Emily Zier"
+date: "October 1, 2015"
+output: html_document
+---
+
+#Question 1
+
+```
+library(foreign)
+voting.data = read.dta('http://j.mp/alpl2013')
+
+t.test(x=voting.data$tech, alternative= "greater", mu = 3)
+
+t.observed = (mean(voting.data$tech)-3) / {sd(voting.data$tech)^2/sqrt(nrow(voting.data))}
+
+pt(t.observed, df = nrow(voting.data)-1, lower.tail=FALSE)
+
+Because our p value is less than .05, we reject the null hypothesis. And since p is actually much less than .05, we can say that the strength of this rejection is quite significant (I think)
+```
+
+#Question Two
+
+A
+```
+t.test(x=voting.data$tech [voting.data$male==1], y=voting.data$tech[voting.data$male==0], mu=0, alternative='two.sided')
+```
+
+Here, the p is equal to 0.1876, which is much greater than our alpha of .05, so we fail to reject the null that claims that there is no difference between technology usage in males and females. 
+
+
+B
+```
+t.test(x=voting.data$eval_voting[voting.data$EV==1], y=voting.data$eval_voting[voting.data$EV==0], mu=0, alternative='two.sided')
+```
+
+Here, since p is much less than our critical value of  0.05, we reject the null and find that there is evidence to support that there is a difference in satisfaction between individuals who use traditional versus e-voting. 
+
+#Quesiton 3
+
+A
+```
+table(voting.data$EV, voting.data$eval_voting)
+
+summary(aov(voting.data$eval_voting~voting.data$EV))
+```
+Since P is so tiny, much smaller than either .05, or .01, we can reject the null that there is no difference in voting experience bewteen voters who vote electronically versus traditionally.
+
+B
+```
+table(voting.data$pol_info,voting.data$eval_voting)
+
+summary(aov(voting.data$eval_voting~as.character(voting.data$pol_info)))
+```
+Here, since p is less than .05 and .01, we reject the null that there is no difference in how voters evaluate voting depending on their levels of political knowledge. 
+
+#Question 4
+
+A
+```
+cor(voting.data$educ, voting.data$pol_info, method = "pearson")
+```
+The corrleation between education and poltical knowledge is 0.35, which is a relatively weak positive correlation. 
+
+B
+```
+cor(voting.data$educ, voting.data$pol_info, method = 'spearman')
+```
+The correlation between education and political knowledge using the spearman method is 0.33, which is a little weaker than before. 
+
+#Question 5
+
+A
+```
+npre=814
+ppre=0.55
+nafter = 1032
+pafter = 0.48
+
+prop.test(x=c(npre*ppre,nafter*pafter), n = c(npre,nafter), alternative = c('two.sided'))
+```
+Because p is less than our alpha of .01, with 99% confidence we can reject the nullthat there is no difference in the proportion of voters who approved of the president before and after the hurricane. 
+
+B
+```
+SEpprepafter = sqrt((ppre*(1-ppre) / npre)+ (pafter*(1-pafter) / nafter))
+
+pdiff= ppre-pafter
+
+zobs = pdiff/SEpprepafter
+2*(1-pnorm(zobs))
+
+pdiff + qnorm(c(0.025, 0.975)) * SEpprepafter
+```
+We can say with 95% confidence that the actual differentce in approval ratings falls between .024 to .116. 
+
+#Question 6
+
+A
+```
+SE = ((2.2)/sqrt(20))
+t.obs = (4.6-5) / SE 
+n=20
+df.sample = 20-1
+pt(t.obs, df = df.sample, lower.tail=TRUE)
+```
+Here, since our p is .21 we fail to reject the null that students take at least 5 years of piano lessons at the school. 
+
+B
+```
+4.6 + qt(c(.025, 0.975), df=df.sample) *SE
+```
+We are 95% confident that the actual average number of music lesson years falls between 3.57 and 5.63 years. 
+
+C
+Yes. Our hypothesis test states that we cannot reject the null - we cannot reject the hypothesis that students take at least five years of music lessons. Secondly, our confidence interval tells us that we are pretty darn confident that the average number of years falls between 3.57 and 5.63. Since 5 falls within that range, we were cohesive in failing to reject that possibility. 
+
+#Question 7
+
+A
+The null hypothesis: The average temperature in 2008 is less than or equal to the average temperature in 1968. 
+The alternative hypothesis: The average temperature in 2008 is greater than the average temperature in 1968. 
+
+Ho: m2008 - m 1968 <= 0
+Ha: m2008 - m1968 > 0
+
+C
+```
+n = 51
+df.sample = 50
+sd.sample = 4.9
+SE = sd.sample/sqrt(n)
+t.obs = (1.1) / SE
+
+pt(t.obs,df=df.sample, lower.tail=FALSE)
+
+Because our p is .0575, which is greater than our alpha of .05, we fail to reject the null. However, this is value is QUITE close to .05, so we are just barely failing to reject. 
+
+D
+```
+We just barely fail to reject the null, so we just barely cannot reject the idea that temperatures are cooler or equal to what they were in 1968. Overall, we have weak evidence that temperatures in 2008 are cooler than or equal to the temperatures in 1968. At 90% confidence we could reject the idea that temperatures in 2008 are less than or equal to temperatures in 1968.
+
+#Question 8 
+```
+bat.df = read.csv('input/Batting.csv')
+library(dplyr)
+bat.df <- bat.df %>% filter(yearID %in% c(2005:2009), AB>=200)
+
+aov.result = aov(bat.df$HR ~as.character(bat.df$yearID))
+summary(aov.result)
+```
+With a p value of .523, we fail to reject the null and conclude there is not a signficant difference in avg homeruns hit each year.
+
+B
+pairwise.t.test(x=bat.df$HR, g = bat.df$yearID, alternative='two.sided', p.adj = 'bonf')
+```
+I used the bonferroni method because I did not know what ele to do, and I believe it is showing that the p value is either .9 or 1 for all years, which is greater than .05 by a lot, so we fail to reject the null and can say there is no significant difference between years. 
+
+
