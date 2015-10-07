@@ -227,7 +227,7 @@ t.obs = (1.1) / SE
 pt(t.obs,df = df.sample,lower.tail=FALSE)
 ```
 
-The p-value for this one-sided hypothesis test is $0.058$. Thus, we *barely* reject the null at $\alpha = 0.05$.
+The p-value for this one-sided hypothesis test is $0.058$. Thus, we *barely* fail to reject the null at $\alpha = 0.05$.
 
 (d) What do you conclude? Interpret your conclusion in context.
 

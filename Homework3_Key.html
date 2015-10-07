@@ -304,7 +304,7 @@ SE =<span class="st"> </span>sd.sample /<span class="st"> </span><span class="kw
 t.obs =<span class="st"> </span>(<span class="fl">1.1</span>) /<span class="st"> </span>SE
 <span class="kw">pt</span>(t.obs,<span class="dt">df =</span> df.sample,<span class="dt">lower.tail=</span><span class="ot">FALSE</span>)</code></pre>
 <pre><code>## [1] 0.05759731</code></pre>
-<p>The p-value for this one-sided hypothesis test is <span class="math">\(0.058\)</span>. Thus, we <em>barely</em> reject the null at <span class="math">\(\alpha = 0.05\)</span>.</p>
+<p>The p-value for this one-sided hypothesis test is <span class="math">\(0.058\)</span>. Thus, we <em>barely</em> fail to reject the null at <span class="math">\(\alpha = 0.05\)</span>.</p>
 <ol start="4" style="list-style-type: lower-alpha">
 <li>What do you conclude? Interpret your conclusion in context.</li>
 </ol>
@@ -357,7 +357,7 @@ aov.result =<span class="st"> </span><span class="kw">aov</span>(bat.df$HR ~<spa
 <h4>The command below is helpful for debugging, please don’t change it</h4>
 <pre><code>## R version 3.2.2 (2015-08-14)
 ## Platform: x86_64-apple-darwin13.4.0 (64-bit)
-## Running under: OS X 10.10.5 (Yosemite)
+## Running under: OS X 10.11 (El Capitan)
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -366,14 +366,14 @@ aov.result =<span class="st"> </span><span class="kw">aov</span>(bat.df$HR ~<spa
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] dplyr_0.4.2    foreign_0.8-65
+## [1] dplyr_0.4.3    foreign_0.8-66
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.0     digest_0.6.8    assertthat_0.1  R6_2.1.0       
-##  [5] DBI_0.3.1       formatR_1.2     magrittr_1.5    evaluate_0.7   
-##  [9] stringi_0.5-5   lazyeval_0.1.10 rmarkdown_0.7   tools_3.2.2    
+##  [1] Rcpp_0.12.1     digest_0.6.8    assertthat_0.1  R6_2.1.1       
+##  [5] DBI_0.3.1       formatR_1.2.1   magrittr_1.5    evaluate_0.8   
+##  [9] stringi_0.5-5   lazyeval_0.1.10 rmarkdown_0.8   tools_3.2.2    
 ## [13] stringr_1.0.0   yaml_2.1.13     parallel_3.2.2  htmltools_0.2.6
-## [17] knitr_1.10.5</code></pre>
+## [17] knitr_1.11</code></pre>
 </div>
 </div>
 </div>
