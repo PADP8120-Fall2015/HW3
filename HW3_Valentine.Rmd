@@ -4,9 +4,10 @@ author: "Thomas K. Valentine"
 date: "October 7, 2015"
 output:
   html_document:
-    highlight: tango 
+    highlight: tango
     theme: united
-widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+  pdf_document: default
+widgets: mathjax
 ---
 ***
 # Data Source
