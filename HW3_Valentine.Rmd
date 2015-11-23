@@ -1,0 +1,289 @@
+---
+title: "Homework 3"
+author: "Thomas K. Valentine"
+date: "October 7, 2015"
+output:
+  html_document:
+    highlight: tango
+    theme: united
+  pdf_document: default
+widgets: mathjax
+---
+***
+# Data Source
+
+We will load the `foreign` library and download Alvarez et al.’s (2013) data in Stata format, taken from: `http://j.mp/alpl2013`. These data are from a field experiment in Salta, Argentina in which some voters cast ballots through e-voting, and others voted in the traditional setting.
+
+```{r eval=TRUE}
+library(foreign)
+voting.dat = read.dta('http://j.mp/alpl2013')
+```
+
+***
+# Variable Key
+#### The variables are: 
+1. An indictor for whether the voter used e-voting or traditional voting (`EV`)
+2. Age group (`age_group`)
+3. Education (`educ`), 
+4. White collar worker (`white_collar`)
+5. Not a full time worker (`not_full_time`)
+6. Male (`male`)
+7. A count variable for # of 6 possible tech. devices used (`tech`)
+8. An ordinal scale for political knowledge (`pol_info`)
+9. A character vector naming the polling place (`polling_place`)
+10. Whether respondent thinks poll workers are qualified (`capable_auth`)
+11. Whether voter evaluated the voting experience positively (`eval_voting`)
+12. Whether voter evaluated the speed of voting as quick (`speed`)
+13. whether voter is sure his or her vote is being counted (`sure_counted`)
+14. Whether voter thought voting was easy (`easy_voting`)
+15. Whether voter is confident in ballot secrecy (`conf_secret`)
+16. Whether voter thinks Salta’s elections are clean (`how_clean`)
+17. Whether voter thinks e-voting should replace trad voting (`agree_evoting`)
+18. whether voter prefers selecting candidates from diff parties electronically (`eselect_cand`).
+
+***
+#Problems
+
+####1. Consider the number of technological devices. Test the hypothesis that the average Salta voter has used more than three of these six devices. (Formally: $H_0: \mu = 3; H_A: \mu > 3$)
+
+```{r}
+#First, we use the t.test command in R to test the hypothesis quickly
+t.test(x = voting.dat$tech,alternative = 'greater',mu = 3)
+
+#Next, we complete the process "by hand", going step by step. 
+#To do this, we use: t-obs = (obs-exp) / (sd/sqrt(n))
+t.obs <- (mean(voting.dat$tech) - 3) / {sd(voting.dat$tech)^2/sqrt(nrow(voting.dat))}
+pt(t.obs,df = nrow(voting.dat)-1,lower.tail = FALSE)
+```
+
+Analysis: The resulting p value is aprox. 0.00000000000000022, which is distinctly less than .05 or even .001. The null is rejected and we can support the statement that "the average Salta voter has used more than three of these six devices."
+
+***
+####2. Conduct two independent sample difference of means tests:
+####a. Is there any difference between men and women in how many technological devices they have used?
+
+```{r}
+t.test(x=voting.dat$tech[voting.dat$male==1],y=voting.dat$tech[voting.dat$male==0],mu=0,alternative='two.sided')
+```
+
+Analysis: By taking the resulting df across values (1466) and populating it into the following formula $t_{obs} < t_{\alpha=0.05,df=1466.2}$, we can conclude that we should fail to reject the null. This demonstrates that there is no noticable difference across gender in number of devices used.
+
+####b. Is there any difference in how positively voters view the voting experience (eval voting) based on whether they used e-voting or traditional voting (EV)?
+
+```{r}
+t.test(x=voting.dat$eval_voting[voting.dat$EV==1],y=voting.dat$eval_voting[voting.dat$EV==0],mu=0,alternative='two.sided')
+```
+
+Analysis: This t-test produces a t=10.494 and 1421.1 degrees of freedom. Looking at the results of the test, there is statistically significant difference between the two voting groups. We reject thereby reject the null, finding there is a significant difference in how positively voters view the voting experience (eval voting) based on whether they used e-voting or traditional voting (EV). 
+  
+*** 
+####3. Construct two cross-tabulations:
+
+####a. Construct a cross-tabulation where the dependent variable is how positively voters view the voting experience (eval voting) and the independent variable is whether they used e-voting or traditional voting (EV). Does the distribution of voting evaluation depend on whether the voter used e-voting?
+
+```{r}
+table(voting.dat$EV,voting.dat$eval_voting)
+summary(aov(voting.dat$eval_voting~voting.dat$EV))
+```
+
+Analysis: As we discussed in class on last wednesday, this is an appropriate place to use the ANOVA approach. To do so, we compare $F_{obs} with F_{\alpha=0.05,df_1=1,df2=1448}$. If F_{\alpha=0.05,df_1=1,df2=1448}$ were larger, we would fail to reject the null. However, here we see that $F_{obs} > F_{\alpha=0.05,df_1=1,df2=1448}$, so we reject the null hypothesis, allowing us to state that there is adequate evidence to suggest that the average electronic voter has a significantly different experience than the average traditional voter.
+
+####b. Construct a cross-tabulation where the dependent variable is how positively voters view the voting experience (eval voting) and the independent variable is the ordinal scale of political knowledge (pol info). Does the distribution of voting evaluation change with the voter’s level of political knowledge?
+
+```{r}
+table(voting.dat$pol_info,voting.dat$eval_voting)
+summary(aov(voting.dat$eval_voting~as.character(voting.dat$pol_info)))
+```
+
+In this process, we use the ANOVA approach. The variable pol_info (which is a actually an ordinal value where groups voters into 1, 2, or 3 based on level of political knowledge) must be treated as categorical for this to work. Because the variable is originally ordinal, and therefore there is no set distance between the 1,2,3 groups, it must be treated as a categorical and not a continuous variable. We then use the anova process to compare the means from each of the groups.
+
+Analysis: We can demonstrate that $F_{obs}$ is greater than $F_{\alpha=0.05,df_1=1,df2=1458}$, so we must reject the null. We subsequently can state that there is significant evidence that voters from the different categories of political knowledge have different levels of voter evaluation.
+
+***
+
+####4. Consider the correlation between level of education (`educ`) and political knowledge (`pol info`):
+####a. Using the `cor()` function, compute Pearson’s `r` between these two variables.
+
+
+```{r}
+cor(voting.dat$educ,voting.dat$pol_info,method = 'pearson')
+```
+
+Analysis: Using pol info as a numeric variable, we use the above to commands to measure the correlation (cor command) between education and political knowledge. The resulting correlation is .35. In Pearson's r, total correlation would be 1, so this correlation appears positive but low.
+
+####b. Many argue that, with two ordinal variables, a more appropriate correlation measure is Spearman’s $\rho$, which is a rank correlation. Compute $\rho$ (again using the `cor()` function - consult `?cor` if you're stuck) and contrast the results from $r$.
+
+```{r}
+cor(voting.dat$educ,voting.dat$pol_info,method = 'spearman')
+```
+
+Analysis: The resulting correlation is .32, a lower level of correlation than the .35 correlation produced by Pearson. As opposed to Pearson, which forces us view pol_info as a categorical, Spearmen's method is sophisticated enough to recognize that we are actually dealing with oridinal values and can therefore rank 1,2, and 3 while acknowledging that there is no set numeric distance between each group.
+
+***
+####5. You are interested in the impact that Hurricane Katrina (and the government's response to Hurricane Katrina) had on President Bush's approval rating. In a Aug. 24, 2005 Gallup poll, 55% of the 814 people surveyed answered that they approved of George W. Bush's handling of his job as president. In a Sept. 14, 2005 Gallup poll, 48% of the 1032 people surveyed answered that they approved of George W. Bush's handling of his job as president.
+
+####a. At a 99% significance level, did the proportion of Americans that approve of Bush's job as president change after Katrina?
+
+```{r}
+#prop.test function carries out a t-test for proportions
+#prop.test(x=vector.of.successes, n = vector of trial counts)
+#We set up a test of equal or given proportions. First we set up the n values to represent the two polls. The Aug. 2005 poll will be treated as Poll 1 and the Sep. 2005 poll will be treated as Poll 2.  
+n1 = 814; n2 = 1032
+
+#We then record the proportions for each poll appropriately.
+p1 = .55; p2 = 0.48
+
+#Now that we have recorded the proper number and proportion information, we can perform the test of equal or given proportions using the prop.test command.
+prop.test(x=c(n1*p1,n2*p2), n = c(n1,n2), alternative=c('two.sided') )
+```
+
+Analysis: The resulting p value is p-value = 0.003279, which means that $p < 0.01$. Therefore, we reject the null, concluding that the difference in voters that approve of George W Bush before and after Katrina is significant.
+
+####b. Construct a 95% confidence interval to test whether the proportion changed. Interpret the confidence interval.
+
+The prop.test  command produced the following 95% confidence interval: 0.02310706 0.11689294. However, since we are asked here to "construct" the test, we can do so "by hand." 
+#####Here are our steps:
+1. We start with the formula $s_{p_1-p_2} =  \sqrt(\frac{\hat{p}_1 (1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2(1-\hat{p}_2)}{n_2})$. 
+2. We know that the two estimates are .55 and .48. 
+3. We can calculate there difference as .07
+4.  
+```{r}
+SEp1p2 = sqrt((p1 * (1-p1) / n1) + (p2 * (1-p2) / n2))
+pdiff = p1 - p2
+zobs = pdiff/SEp1p2
+2*(1-pnorm(zobs))
+pdiff + qnorm(c(0.025,0.975)) * SEp1p2
+```
+
+The result (0.02420581 0.11579419) and extremely close to the prop.test outcome of (0.02310706 0.11689294). According to this test, we can say that there is a 95% chance that the interval ranging from 0.02420581 to 0.11579419 contains the actual difference in GwB approval ratings.
+***
+
+####6. (also Open Intro 5.11) The School for Kids Who Are Good At Music and Want To Learn To Do Other Stuff Good Too (SFKWAGAMAWTLTDOSGT) claims that its students take at least 5 years of piano lessons on average. We have a random sample of 20 former SFKWAGAMAWTLTDOSGT students, with a mean of 4.6 years of piano lessons and a standard deviation of 2.2 years.
+
+####a. Evaluate SFKWAGAMAWTLTDOSGT's claim using a hypothesis test.
+
+###Note: Nice Zoolander reference!
+![alt text](http://cdn.ymaservices.com/editorial_service/bases/images/000/009/138/medium/zoolander-for-blog.jpg?1427992126)
+
+
+####Anyway, on to the problem.
+The SFKWAGAMAWTLTDOSGT claims that the norm for students is 5 years (at least) so we can construct our hypotheses as follows:
+$H_0$: \mu >= 5
+
+$H_A$: \mu < 5
+
+To disprove our hypothesis, we would only need to disprove that students take at least 5, so this is a one-tailed measurement.
+
+We conduct a "by hand" t-test:
+```{r}
+#t.obs = (obs-exp) / SE
+SE = ((2.2)/sqrt(20))
+t.obs =  (4.6 - 5) / SE
+n=20
+df.sample = 20-1 
+#one-sided test, so just want lower tail. 
+pt(t.obs,df = df.sample,lower.tail=TRUE)
+```
+
+Analysis: P is .213112, which is larger than .05. Because p > 0.05, we fail to reject the null. There is insufficient evidence to reject that average  SFKWAGAMAWTLTDOSGT students take at least 5 years of music lessons. 
+
+####b. Construct a 95% confidence interval for the number of years SFKWAGAMAWTLTDOSGT students take piano lessons, and interpet it in context of the data.
+
+```{r}
+4.6 + qt(c(0.025,0.975),df=df.sample) * SE
+```
+
+Analysis: The resulting confidence interval is 3.570368 to 5.629632. There is a 95% chance that the actual number of average years of music instruction is contained inside that interval. 
+
+####c. Do your results from the hypothesis test and the confidence interval agree? Explain your reasoning.
+
+Analysis: Because the null hypothesis ($\mu$ >= 5) is contained within the confidence interval (3.570368 to 5.629632), yes they agree. This makes sense, as we clearly could not reject the null and we couldn't have rejected a value within the confidence interval.
+
+***
+####7. (also Open Intro 5.19) Let’s consider how temperatures have changed in the US from 1968 to 2008. The daily high temperature reading on January 1 was collected in 1968 and 2008 for 51 randomly selected locations in the continental US. Then the difference between the two readings (temperature in 2008 - temperature in 1968) was calculated for each of the 51 different locations. The average of these 51 values was 1.1 degrees with a standard deviation of 4.9 degrees. We are interested in determining whether these data provide strong evidence of temperature warming in the continental US.
+
+####(a) Write hypotheses for this research in symbols and in words.
+
+$H_0$: $\mu_{2008} - \mu_{1968} <= 0$ or $\mu_{2008-1968} <= 0$
+Null: Average daily high temperatures in the year 2008 is less than or equal to the average temperature in year 1968.
+
+$H_A$: $\mu_{2008} - \mu_{1968} > 0$ or $\mu_{2008-1968} > 0$
+Alternative: Average daily high temperatures in  the year 2008 is greater than the average temperature in year 1968. 
+
+####(b) Check the conditions required to complete this test.
+#####Here are the conditions we would require
+1. The 51 locations selected must have been chosen at random
+2. The locations selected should represent less than 10% of all US locations
+3. Sample size must be greater than 30.
+4. Distribution is not adversely skewed. (Would check data to confirm)
+
+####(c) Calculate the test statistic and find the p-value.
+
+First, we conduct a "by hand" t-test
+```{r}
+n = 51
+df.sample = n-1
+sd.sample = 4.9
+SE = sd.sample / sqrt(n)
+t.obs = (1.1) / SE
+pt(t.obs,df = df.sample,lower.tail=FALSE)
+```
+
+Analysis: We end with a p-value of 0.05759731. Although .05759 is only narrowly larger than .05, we can still say that .057 > .05. Therefore we fail to reject the null.
+####(d) What do you conclude? Interpret your conclusion in context.
+
+**Analysis:** We can conclude that there has been an increase in average high temperatures. The p-value was .057, which is above the .05 value needed to say we met the 95% confidence interval. If we were writing this up in a journal article, it would be worth mentioning under limitations that, although we have produced evidence within the 95% confidence interval, the evidence is relatively weak. We we acknowledge that 90% confidence interval would result in us rejecting the null.
+
+***
+####8. Go to Sean Lahman's baseball statistics database and download the 2014 version .csv file (http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip). Read in the file of batting statistics `Batting.csv` and select **only** players-seasons between 2005 and 2009 (try `yearID %in% c(2005:2009)` as your filtering mechanism) and **only** players who have at least 200 at-bats (`AB>=200`).
+
+First, we load the data. We also load the dplyr package through the following command, although we could also load it by usng the packages tab from within RStudio.
+```{r message = FALSE}
+bat.df = read.csv('input/Batting.csv')
+library(dplyr)
+bat.df <- bat.df %>% filter(yearID %in% c(2005:2009),AB>=200)
+```
+
+####(a) Conduct an ANOVA to see whether there is a significant difference in average number of homeruns (`HR`) hit by players in each of these years.
+
+```{r}
+aov.result = aov(bat.df$HR ~ as.character(bat.df$yearID))
+summary(aov.result)
+```
+
+yearID is used as a category so that we can categorize players from each year recorded into our ANOVA calculations.
+
+Analysis: Similar to our last problem, we have a p value above the .05 threshold, but only barely. Here, p is .52, which provides us weak evidence of a difference in average homeruns per player years. We only can conclude this from 2005 through 2009. It might be more interesting to see if this p value was strengthened if we looked across a longer time period, especially to see if homeruns increased or decreased alongside rates of drug/enhancement use. 
+
+####(b) Using the techniques we employed in lab, conduct a series of pairwise comparisons to identify any significant differences between individual pairs of years. 
+
+```{r}
+pairwise.t.test(x= bat.df$HR,g = bat.df$yearID,alternative='two.sided',p.adj = 'bonf')
+```
+
+**Analysis:** As Tyler said in class, if you can be born soon enough, have a PhD, and write a simple formula, you get it named after you forever, therefore we call this technique the Bonferroni correction. I'd like to add that I think the reason the name is stuck is more than the fact that Bonferroni got there first, but instead because his name sounds like a delicious italian dessert. My opinion.
+
+The Bonferroni approach confirms what we just said in part a: the p value is too close to the .5 threshold for us to conclude there is any specific difference by year. In the table produced, we cannot find any significant difference among paired years.
+
+***
+# Report your process
+
+####Here were my steps:
+1. Set up a blank R Markdown file
+2. Open Key
+3. Bring Key into blank file
+4. Adjust formatting to preference
+5. Adjust formatting again to make easier to see
+6. One last formatting tweak: did some research on bootstrap templates, adjusted things a final time to taste
+7. Worked through each problem systematically, making sure that I understood the process completely, using the ? command when necessary.
+8. I utilized google to refresh my knowledge of Pearson's r, full correlation, ordinal values, and t-test formulas
+9. I'll admit that I was suprised by the results of the average high temperature problem.
+10. I learned how to insert an image into an r markdown file.
+11. The most difficult part was looking at each procedure and having the confidence - not to understand it - but to believe that I would know to use that specific method in the problem when I encounter it again.
+
+***
+#### The command below is helpful for debugging, please don't change it
+
+```{r echo=FALSE}
+sessionInfo()
+```
